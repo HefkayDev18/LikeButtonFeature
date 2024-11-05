@@ -15,12 +15,10 @@ namespace LikeButtonFeature.Service
 
         public async Task<int> GetLikeCountAsync(int articleId)
         {
-            // Check cache first
             var likeCount = await _cacheService.GetLikeCountAsync(articleId);
             if (likeCount == null)
             {
                 likeCount = await _likeRepository.GetLikeCountAsync(articleId);
-                // Cache the like count for future requests
                 await _cacheService.SetLikeCountAsync(articleId, likeCount.Value);
             }
             return likeCount.Value;
@@ -28,7 +26,6 @@ namespace LikeButtonFeature.Service
 
         public async Task IncrementLikeAsync(int articleId)
         {
-            // Update in the cache and database asynchronously
             await _cacheService.IncrementLikeCountAsync(articleId);
             await _likeRepository.IncrementLikeCountAsync(articleId);
         }
